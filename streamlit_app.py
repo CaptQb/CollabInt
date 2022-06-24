@@ -31,11 +31,19 @@ def user_input_features():
     features = pd.DataFrame(data, index=[0])
     return features
 
+
 df = user_input_features()
 
 st.subheader('User Input parameters')
 st.write(df)
 
+m = folium.Map([50.6, -1.3], zoom_start=3)
+boundsdata = r'map (1).geojson'
+folium.GeoJson(boundsdata).add_to(m)
+m
+
+
+'''
 iris = datasets.load_iris()
 X = iris.data
 Y = iris.target
@@ -55,3 +63,4 @@ st.write(iris.target_names[prediction])
 
 st.subheader('Prediction Probability')
 st.write(prediction_proba)
+'''
