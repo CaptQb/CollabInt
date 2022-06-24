@@ -1,35 +1,48 @@
-from collections import namedtuple
-import altair as alt
-import math
-import pandas as pd
 import streamlit as st
+import pandas as pd
+from sklearn import datasets
+from sklearn.ensemble import RandomForestClassifier
 
-"""
-# Welcome to Streamlit!
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+st.write("""
+# Simple Iris Flower Prediction App
+This app predicts the **Iris flower** type!
+""")
 
+st.sidebar.header('User Input Parameters')
 
-with st.echo(code_location='below'):
-    total_points = st.slider("Number of points in spiral", 1, 5000, 2000)
-    num_turns = st.slider("Number of turns in spiral", 1, 100, 9)
+def user_input_features():
+    sepal_length = st.sidebar.slider('Sepal length', 4.3, 7.9, 5.4)
+    sepal_width = st.sidebar.slider('Sepal width', 2.0, 4.4, 3.4)
+    petal_length = st.sidebar.slider('Petal length', 1.0, 6.9, 1.3)
+    petal_width = st.sidebar.slider('Petal width', 0.1, 2.5, 0.2)
+    data = {'sepal_length': sepal_length,
+            'sepal_width': sepal_width,
+            'petal_length': petal_length,
+            'petal_width': petal_width}
+    features = pd.DataFrame(data, index=[0])
+    return features
 
-    Point = namedtuple('Point', 'x y')
-    data = []
+df = user_input_features()
 
-    points_per_turn = total_points / num_turns
+st.subheader('User Input parameters')
+st.write(df)
 
-    for curr_point_num in range(total_points):
-        curr_turn, i = divmod(curr_point_num, points_per_turn)
-        angle = (curr_turn + 1) * 2 * math.pi * i / points_per_turn
-        radius = curr_point_num / total_points
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
-        data.append(Point(x, y))
+iris = datasets.load_iris()
+X = iris.data
+Y = iris.target
 
-    st.altair_chart(alt.Chart(pd.DataFrame(data), height=500, width=500)
-        .mark_circle(color='#0068c9', opacity=0.5)
-        .encode(x='x:Q', y='y:Q'))
+clf = RandomForestClassifier()
+clf.fit(X, Y)
+
+prediction = clf.predict(df)
+prediction_proba = clf.predict_proba(df)
+
+st.subheader('Class labels and their corresponding index number')
+st.write(iris.target_names)
+
+st.subheader('Prediction')
+st.write(iris.target_names[prediction])
+#st.write(prediction)
+
+st.subheader('Prediction Probability')
+st.write(prediction_proba)
