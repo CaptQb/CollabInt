@@ -1,11 +1,20 @@
-import streamlit as st
-import pandas as pd
-from sklearn import datasets
-from sklearn.ensemble import RandomForestClassifier
+import folium
+import numpy as np
+import earthpy as et
+from glob import glob
+from osgeo import gdal
+import rasterio as rio
+import geopandas as gpd
+import earthpy.plot as ep
+import earthpy.spatial as es
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+from matplotlib.colors import ListedColormap
+from sentinelsat.sentinel import SentinelAPI, read_geojson, geojson_to_wkt
 
 st.write("""
-# Simple Iris Flower Prediction App
-This app predicts the **Iris flower** type!
+# Simple Satellite Image Analysis App
+This app can visualise and download satellite data through sentinalsat API
 """)
 
 st.sidebar.header('User Input Parameters')
